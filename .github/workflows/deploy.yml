@@ -1,0 +1,21 @@
+name: Build and Deploy C Game
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+
+      - name: Build Web Version
+        run: |
+          # This command compiles your main.c using Raylib for Web
+          emcc main.c -o index.html -lraylib -s USE_GLFW=3 -s ASYNCIFY --shell-file shell.html
+          
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: . # The folder where index.html was created
+          branch: gh-pages
